@@ -1,0 +1,34 @@
+			
+REQUEST BODY	No	Field name	Type	Not null	Description	Note
+	1	SOlst	CHAR	TRUE	Danh sách SO	150 SO, mỗi SO cách nhau 1 dấu phẩy
+						
+RESPONSE	No	Field name	Type	Not null	Description	Note
+	1	SO	CHAR	TRUE	SO	
+	2	Status	NVARCHAR2	TRUE	Trễ/Đúng giờ	trả rỗng nếu như đơn hàng chưa có thời gian giao thành công
+						
+RULES		"Nếu đơn có Thời gian hẹn giao cuối = null thì so sánh Thời gian giao thực tế và Thời gian hẹn giao đầu. 
++ Thời gian giao thực tế > Thời gian hẹn giao đầu => Status = Trễ
++ Thời gian giao thực tế <= Thời gian hẹn giao đầu => Status = Đúng giờ
+Nếu đơn có Thời gian hẹn giao cuối <> null và Lý do chỉnh = 2 hoặc 5 thì so sánh Thời gian giao thực tế và Thời gian hẹn giao cuối. 
++ Thời gian giao thực tế > Thời gian hẹn giao cuối => Status = Trễ
++ Thời gian giao thực tế <= Thời gian hẹn giao cuối => Status = Đúng giờ
+Nếu đơn có Thời gian hẹn giao cuối <> null và Lý do chỉnh <> 2 hoặc 5 => Status = Trễ
+
+Thời gian hẹn giao đầu  = crm.lsm_delivery.beforedeliverytime
+Thời gian hẹn giao cuối = crm.lsm_delivery.afterdeliverytime
+Thời gian giao thực tế = crm.lsm_delivery.finaldeliverytime
+Lý do chỉnh = crm.lsm_delivery.reasonchangetimeid
+crm trên con postgres
+"				
+						
+EXAMPLE REQUEST						
+	Output 	"[
+  {
+    ""SO"": ""11467SO26070430814"",
+    ""status"": ""Trễ""
+  },
+  {
+    ""SO"": ""11467SO26079991211"",
+    ""status"": ""Đúng giờ""
+  }
+]"				
